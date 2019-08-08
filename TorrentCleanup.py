@@ -12,80 +12,6 @@
     #                   GNU General Public License v3.0                     #
     #########################################################################
 
-    Sonarr/Sonarr4K Setup:
-    -------------
-    1. Click "Settings" -> "Connect".
-
-    2. Add a new "Custom Script".
-
-    3. Add the following:
-
-        i. Name: Torrent Cleanup
-
-        ii. On Grab: No
-
-        iii. On Download: Yes
-
-        iv. On Upgrade: Yes
-
-        v. On Rename: No
-
-        vi. Path: /scripts/torrents/TorrentCleanup.py
-
-        vii. Arguments: sonarr
-
-    ========================================================================
-
-    Radarr/Radarr4K Setup:
-    -------------
-    1. Click "Settings" -> "Connect".
-
-    2. Add a new "Custom Script".
-
-    3. Add the following:
-
-        i. Name: Torrent Cleanup
-
-        ii. On Grab: No
-
-        iii. On Download: Yes
-
-        iv. On Upgrade: Yes
-
-        v. On Rename: No
-
-        vi. Path: /scripts/torrents/TorrentCleanup.py
-
-        vii. Arguments: radarr
-
-    ========================================================================
-
-    Lidarr Setup:
-    -------------
-    1. Click "Settings" -> "Connect".
-
-    2. Add a new "Custom Script".
-
-    3. Add the following:
-
-        i. Name: Torrent Cleanup
-
-        ii. On Grab: No
-
-        iii. On Album Import: Yes
-
-        iv. On Track Import: Yes
-
-        v. On Track Upgrade: Yes
-
-        vi. On Rename: No
-
-        vii. Path: /scripts/torrents/TorrentCleanup.py
-
-        viii. Arguments: lidarr
-
-    ========================================================================
-
 """
 import logging
 import os
@@ -101,20 +27,17 @@ logging.basicConfig(
 log = logging.getLogger("TorrentCleanup")
 
 # Retrieve Required Variables
-if len(sys.argv) <= 1:
-    log.error("You must specify an argument of either sonarr/radarr/lidarr.")
+if os.environ.get('sonarr_eventtype') == "Test":
     sys.exit(0)
-elif os.environ.get('sonarr_eventtype') == "Test":
-    sys.exit(0)
-elif 'sonarr' in sys.argv[1].lower():
+elif 'sonarr_eventtype' in os.environ:
     sourceFile = os.environ.get('sonarr_episodefile_sourcepath')
     sourceFolder = os.environ.get('sonarr_episodefile_sourcefolder')
-elif 'radarr' in sys.argv[1].lower():
+elif 'radarr_eventtype' in os.environ:
     sourceFile = os.environ.get('radarr_moviefile_sourcepath')
     sourceFolder = os.environ.get('radarr_moviefile_sourcefolder')
-elif 'lidarr' in sys.argv[1].lower():
-    sourceFile = os.environ.get('lidarr_trackfile_sourcepath')
-    sourceFolder = os.environ.get('lidarr_trackfile_sourcefolder')
+elif 'lidarr_eventtype' in os.environ:
+    sourceFile = os.environ.get('lidarr_trackfile_path')
+    sourceFolder = os.environ.get('lidarr_addedtrackpaths')
 else:
     log.error("Unable to determine cleanup requester. This must be either 'sonarr', 'radarr', or 'lidarr'.")
     sys.exit(0)
