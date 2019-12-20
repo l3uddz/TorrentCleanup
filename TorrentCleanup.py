@@ -29,6 +29,8 @@ log = logging.getLogger("TorrentCleanup")
 # Retrieve Required Variables
 if os.environ.get('sonarr_eventtype') == "Test":
     sys.exit(0)
+elif os.environ.get('lidarr_eventtype') == "Test":
+    sys.exit(0)
 elif 'sonarr_eventtype' in os.environ:
     sourceFile = os.environ.get('sonarr_episodefile_sourcepath')
     sourceFolder = os.environ.get('sonarr_episodefile_sourcefolder')
